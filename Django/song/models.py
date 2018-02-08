@@ -13,6 +13,6 @@ class Song(models.Model):
         return f'{self.title}'
 
 # class ArtistSong(models.Model):
-#     artist = models.ForeignKey(Artist, on_delete=models.CASCADE)
+#     artist = models.ForeignK.ey(Artist, on_delete=models.CASCADE)
 #     song = models.ForeignKey(Song, on_delete=models.CASCADE)
 #     demo_date = models.DateTimeField()
