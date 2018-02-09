@@ -1,5 +1,5 @@
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 from artist.models import Artist
 
@@ -33,7 +33,7 @@ def artist_add(request):
     # 6. request.POST에 담긴 값을 사용해 Artist인스턴스 생성
     # 7. 생성 완료 후 'artist:artist-list' URL name에 해당하는 view로 이동
 
-    context = {}
+
     if request.method == 'POST':
         name = request.POST['name']
         real_name = request.POST['real_name']
@@ -43,16 +43,16 @@ def artist_add(request):
         blood_type = request.POST['blood_type']
         intro = request.POST['intro']
 
-        artist = Artist.objects.create(
+        Artist.objects.create(
             name=name,
             real_name=real_name,
             nationality=nationality,
-            birth_date=birth_date,
-            constellation=constellation,
-            blood_type=blood_type,
-            intro=intro
+            # birth_date=birth_date,
+            # constellation=constellation,
+            # blood_type=blood_type,
+            # intro=intro
         )
 
-        return HttpResponse('artist')
+        return redirect('artist:artist-list')
     else:
-        return render(request, 'artist/artist_add.html', context)
+        return render(request, 'artist/artist_add.html')
