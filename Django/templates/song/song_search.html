@@ -2,12 +2,17 @@
 
 {% block content %}
 <div>
-    <form action="" method="post">
+    <form action="" method="POST">
         {% csrf_token %}
-        <input type="text">
+        <input type="text" name="keyword">
         <button type="submit">검색</button>
-
     </form>
+
+    <ul>
+        {% for song in songs %}
+        <li>{{ song.title }}</li>
+        {% endfor %}
+    </ul>
 </div>
 
 {% endblock %}
