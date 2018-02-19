@@ -33,7 +33,6 @@ def artist_add(request):
     # 6. request.POST에 담긴 값을 사용해 Artist인스턴스 생성
     # 7. 생성 완료 후 'artist:artist-list' URL name에 해당하는 view로 이동
 
-
     if request.method == 'POST':
         name = request.POST['name']
         real_name = request.POST['real_name']
