@@ -1,3 +1,4 @@
+from bs4 import BeautifulSoup
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 
@@ -55,3 +56,40 @@ def artist_add(request):
         return redirect('artist:artist-list')
     else:
         return render(request, 'artist/artist_add.html')
+
+
+def artist_add_from_melon(request):
+    """
+    Template: artist/artist_add_from_melon.html
+        form (input[name=keyword] 한개, button 한개)
+    1. form에 주어진 'keyword'로 멜론 사이트의 아티스트 검색 결과를 크롤링
+    2. 크롤링 된 검색 결과를 적절히 파싱해서 검색 결과 목록을 생성
+        -> list내에 dict들을 만드는 형태
+        artist_info_list = [
+            {'artist_id': 261143, 'name': '아이유', 'url_img_cover': 'http:...'},
+            {'artist_id': 261143, 'name': '아이유', 'url_img_cover': 'http:...'},
+            {'artist_id': 261143, 'name': '아이유', 'url_img_cover': 'http:...'},
+            {'artist_id': 261143, 'name': '아이유', 'url_img_cover': 'http:...'},
+        ]
+    3. 해당 결과 목록을 템플릿에 출력
+        context = {'artist_info_list': artist_info_list}로 전달 후
+        템플릿 에서 사용
+
+    :param request:
+    :return:
+    """
+
+
+    keyword = request.GET.get('keyword')
+    if keyword:
+        import requests
+        from bs4 import BeautifulSoup
+
+        url = 'http://www.melon.com/search/artist/index.htm'
+        params = {
+            'q': keyword,
+        }
+        response = request.get(url, params)
+        soup = BeautifulSoup(response.text, 'lxml')
+
+        li_list = soup.select('div.list_atist12 > ul > li')
