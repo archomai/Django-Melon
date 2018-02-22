@@ -1,61 +1,39 @@
-from typing import NamedTuple
 
+import requests
+from bs4 import BeautifulSoup
 from django.shortcuts import render
 
-from ...models import Song
 
-
-def song_search(request):
-    """
-    사용할 URL : song/search/
-    사용할 Template: templates/song/song_search.html
-        form안에
-            input한개, button한개 배치
-
-    - GET POST 분기
-    1. input의 name을 keyword로 지정
-    2. 이 함수를 request.method가 'GET'일 때와 'POST'일 때로 분기
-    3. request.method가 'POST'일 때
-        request.POST dict의 'name'키에 해당하는 값을
-        HttpRespose로 출력
-    4. request.method가 'GET'일 때
-        이전에 하던 템플릿 출력을 유지
-
-    - Query filter로 검색하기
-    1. keyword가 자신의 'title'에 포함되는 Song 쿼리셋 생성
-    2. 위 쿼리셋을 'songs'변수에 할당
-    3. context dict를 만들고 'songs'키에 songs변수를 할당
-    4. render의 3번째 인수로 context를 전달
-    5. template에 전달된 'songs'를 출력
-    :param request:
-    :return:
-    """
-
-    context = {
-        'song_infos': [],
-    }
+def song_search_from_melon(request):
     keyword = request.GET.get('keyword')
-
-    class SongInfo(NamedTuple):
-        type: str
-        q: Q
-
+    context = {}
     if keyword:
-        song_infos = (
-            SongInfo(
-                type='아티스트명',
-                q=Q(album__artists__name__contains=keyword)),
-            SongInfo(
-                type='앨범명',
-                q=Q(album__title__contains=keyword)),
-            SongInfo(
-                type='노래제목',
-                q=Q(title__contains=keyword)),
-        )
-        for type, q in song_infos:
-            context['song_infos'].append({
-                'type': type,
-                'songs': Song.objects.filter(q)
-            })
+        song_info_list = []
+        url = 'https://www.melon.com/search/song/index.htm'
+        params = {
+            'q': keyword,
+            'section': 'song',
+        }
+        response = requests.get(url, params)
+        soup = BeautifulSoup(response.text, 'lxml')
+        tr_list = soup.select('form#frm_defaultList table > tbody > tr')
 
-    return render(request, 'song/song_search.html', context)
+        for tr in tr_list:
+            song_id = tr.select_one('td:nth-of-type(1) input[type=checkbox]').get('value')
+            if tr.select_one('td:nth-of-type(3) a.fc_gray'):
+                title = tr.select_one('td:nth-of-type(3) a.fc_gray').get_text(strip=True)
+            else:
+                title = tr.select_one('td:nth-of-type(3) > div > div > span').get_text(strip=True)
+
+            artist = tr.select_one('td:nth-of-type(4) span.checkEllipsisSongdefaultList').get_text(
+                strip=True)
+            album = tr.select_one('td:nth-of-type(5) a').get_text(strip=True)
+
+            song_info_list.append({
+                'song_id': song_id,
+                'title': title,
+                'artist': artist,
+                'album': album,
+            })
+        context['song_info_list'] = song_info_list
+    return render(request, 'song/song_search_from_melon.html', context)
