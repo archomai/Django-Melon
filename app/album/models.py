@@ -24,6 +24,9 @@ class AlbumManager(models.Manager):
             album_id=album_id,
             ext=get_buffer_ext(temp_file),
         )
+
+        if album.img_cover:
+            album.img_cover.delete()
         album.img_cover.save(file_name, File(temp_file))
         return album, album_created
 
