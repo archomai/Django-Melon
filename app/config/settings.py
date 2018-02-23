@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'album',
     'song',
     'artist',
+    'members',
 ]
 
 MIDDLEWARE = [
@@ -117,6 +118,8 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+AUTH_USER_MODEL = 'members.User'
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
