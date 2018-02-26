@@ -4,6 +4,7 @@ from pathlib import Path
 
 import magic
 import requests
+from django.conf import settings
 from django.core.files import File
 from django.db import models
 
@@ -125,8 +126,69 @@ class Artist(models.Model):
         '소개',
         blank=True,
     )
+    like_users = models.ManyToManyField(
+        settings.AUTH_USER_MODEL,
+        through='ArtistLike',
+        related_name='like_artists',
+        blank=True,
+    )
 
     objects = ArtistManager()
 
     def __str__(self):
         return self.name
+
+    def toggle_like_user(self, user):
+        """
+        자신의 like_users에 주어진 user가 존재하지 않으면
+            like_users에 추가한다
+        이미 존재할 경우에는 없앤다
+        :param user:
+        :return:
+        """
+        # 자신이 artist이면, 주어진 user와의 ArtistLike의 QuerySet
+        # query = ArtistLike.objects.filter(artist=self, user=user).exitsts()
+        # if query.exists():
+        #     query.delete()
+        #     return False
+        # else:
+        #     ArtistLike.objects.create(artist=self, user=user)
+        #     return True
+
+        like, like_created = self.like_user_info_list.get_or_create(user=user)
+        if not like_created:
+            like.delete()
+        return like_created
+
+
+class ArtistLike(models.Model):
+    # Artist와 User(members.User)와의 관계를 나타내는 중계모델
+
+    # 다 작성후에
+    # 임의의 유저에서 좋아하는 Artist추가해보기
+    # 임의의 Artist에서 좋아하고 있는 유저 추가해 보기
+    artist = models.ForeignKey(
+        Artist,
+        related_name='like_user_info_list',
+        on_delete=models.CASCADE,
+    )
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name='like_artist_info_list',
+        on_delete=models.CASCADE,
+    )
+    created_date = models.DateTimeField(
+        auto_now_add=True,
+    )
+
+    class Meta:
+        unique_together = (
+            ('artist', 'user')
+        )
+
+    def __str__(self):
+        return 'ArtistLike (User: {user}, Artist: {artist}, created: {created})'.format(
+            user=self.user.username,
+            artist=self.artist.name,
+            created=datetime.strftime(self.created_date, '%y.%m.%d'),
+        )
