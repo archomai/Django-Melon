@@ -19,7 +19,7 @@ from django.contrib import admin
 from django.urls import path, include
 
 from config import views
-from members.views import login_view
+from members.views import login_view, signup_view, logout_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -28,6 +28,10 @@ urlpatterns = [
     path('', views.index, name='index'),
 
     path('login/', login_view, name='login'),
+
+    path('logout/', logout_view, name='logout'),
+
+    path('signup/', signup_view, name='signup'),
 
     path('artist/', include('artist.urls')),
     # song
