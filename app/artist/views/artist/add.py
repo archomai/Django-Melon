@@ -1,5 +1,6 @@
 from django.shortcuts import redirect, render
 
+from ...forms import ArtistForm
 from ...models import Artist
 
 __all__ = (
@@ -26,24 +27,17 @@ def artist_add(request):
     # 7. 생성 완료 후 'artist:artist-list' URL name에 해당하는 view로 이동
 
     if request.method == 'POST':
-        name = request.POST['name']
-        real_name = request.POST['real_name']
-        nationality = request.POST['nationality']
-        birth_date = request.POST['birth_date']
-        constellation = request.POST['constellation']
-        blood_type = request.POST['blood_type']
-        intro = request.POST['intro']
+        # multipart/form-data로 전달된 파일은
+        # request.FILES 속성에 들어있음
 
-        Artist.objects.create(
-            name=name,
-            real_name=real_name,
-            nationality=nationality,
-            # birth_date=birth_date,
-            # constellation=constellation,
-            # blood_type=blood_type,
-            # intro=intro
-        )
-
-        return redirect('artist:artist-list')
+        form = ArtistForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('artist:artist-list')
     else:
-        return render(request, 'artist/artist_add.html')
+        form = ArtistForm()
+
+    context = {
+        'artist_form': form,
+    }
+    return render(request, 'artist/artist_add.html', context)
