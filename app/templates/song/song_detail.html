@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div>
+    <a href="{% url 'song:song-search-from-melon' %}">노래 추가</a>
+    <ul>
+        <li>
+            <a href="{% url 'song:song-detail' song_pk=song.pk %}">
+                <div>{{ song.title }}</div>
+                <div>{{ song.genre }}</div>
+                <div>{{ song.lyrics }}</div>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+{% endblock %}

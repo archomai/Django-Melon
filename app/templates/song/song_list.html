@@ -2,9 +2,26 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<div>
+    <a href="{% url 'song:song-search-from-melon' %}">노래 추가</a>
     <ul>
         {% for song in songs %}
-        <li>{{ song.title }}</li>
+        <a href="{% url 'song:song-detail' song_pk=song.pk %}">
+            <li>{{ song.title }}</li>
+        </a>
+
+        {% if request.user.is_authenticated %}
+        <form action="{% url 'song:song-like-toggle' song_pk=song.pk %}" method="POST">
+            {% csrf_token %}
+            {% if request.user in song.like_users.all %}
+                <button type="submit">좋아요 취소</button>
+            {% else %}
+            <button type="submit">좋아요 토글</button>
+            {% endif %}
+        </form>
+        {% endif %}
+
         {% endfor %}
     </ul>
+</div>
 {% endblock %}

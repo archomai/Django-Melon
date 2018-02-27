@@ -1,8 +1,10 @@
+import datetime
 
 from django.db import models, transaction
 
 from album.models import Album
 from artist.models import Artist
+from config import settings
 from crawler.song import SongData
 
 
@@ -63,6 +65,12 @@ class Song(models.Model):
         '가사',
         blank=True,
     )
+    like_users = models.ManyToManyField(
+        settings.AUTH_USER_MODEL,
+        through='SongLike',
+        related_name='like_songs',
+        blank=True,
+    )
 
     objects = SongManager()
 
@@ -87,3 +95,37 @@ class Song(models.Model):
         #         album=self.album.title,
         #     )
         return self.title
+
+    def toggle_like_user(self, user):
+        like, like_created = self.like_user_info_list.get_or_create(user=user)
+        if not like_created:
+            like.delete()
+        return like_created
+
+
+class SongLike(models.Model):
+    song = models.ForeignKey(
+        Song,
+        related_name='like_user_info_list',
+        on_delete=models.CASCADE,
+    )
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name='like_song_info_list',
+        on_delete=models.CASCADE,
+    )
+    created_date = models.DateTimeField(
+        auto_now_add=True,
+    )
+
+    class Meta:
+        unique_together = (
+            ('song', 'user')
+        )
+
+    def __str__(self):
+        return 'SongLike (User: {user}, Song: {song}, created: {created})'.format(
+            user=self.user.username,
+            song=self.song.name,
+            created=datetime.strftime(self.created_date, '%y.%m.%d'),
+        )
