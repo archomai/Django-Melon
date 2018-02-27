@@ -41,6 +41,10 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
+
+FACEBOOK_APP_ID = '189086525189859'
+FACEBOOK_SECRET_CODE = 'ff60f934408690673f2bfa11be8d264b'
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
