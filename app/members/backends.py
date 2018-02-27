@@ -1,6 +1,10 @@
 import requests
+
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.core.files import File
+
+from utils.file import download, get_buffer_ext
 
 User = get_user_model()
 
@@ -67,8 +71,6 @@ class FacebookBackend:
             last_name = user_info['last_name']
             url_picture = user_info['picture']['data']['url']
 
-
-
             try:
                 user = User.objects.get(username=facebook_id)
             except User.DoesNotExist:
@@ -76,8 +78,11 @@ class FacebookBackend:
                     username=facebook_id,
                     first_name=first_name,
                     last_name=last_name,
-
                 )
+            if not user.img_profile:
+                temp_file = download(url_picture)
+                ext = get_buffer_ext(temp_file)
+                user.img_profile.save(f'{user.pk}.{ext}', File(temp_file))
             return user
         except Exception:
             return None
