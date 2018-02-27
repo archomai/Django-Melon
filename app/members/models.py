@@ -10,6 +10,11 @@ class User(AbstractUser):
     # 모든 application들의 migrations폴더 내의 Migration 파일 전부 삭제
     # makemigrations - > migrate
 
+    img_profile = models.ImageField(
+        upload_to='user',
+        blank=True,
+    )
+
     # 데이터베이스에 member_user 데이블이 생성되었는지 확인
 
     def toggle_like_artist(self, artist):

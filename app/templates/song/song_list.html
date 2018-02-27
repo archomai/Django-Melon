@@ -3,9 +3,13 @@
 {% load song_extras %}
 
 {% block content %}
+
+
 <div class="song-list-container">
+	<a href="{% url 'song:song-search-from-melon' %}">노래 추가</a>
 	<ul class="song-list">
 		{% for song in songs %}
+        <a href="{% url 'song:song-detail' song_pk=song.pk %}">
 		<li class="song-list-item clearfix">
 			<div class="li-section clearfix">
 				<div class="li-section-title">제목</div>
@@ -16,6 +20,7 @@
 				<div class="li-section-content">{{ song.lyrics|ellipsis_line:3|linebreaksbr }}</div>
 			</div>
 		</li>
+        </a>
 		{% endfor %}
 	</ul>
 </div>
