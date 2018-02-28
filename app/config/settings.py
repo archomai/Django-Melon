@@ -38,10 +38,11 @@ SECRET_KEY = 'm9mx6z79rz0a!26bb!52_5^t*ukedfilf!4%+_z3%*9=ggbixl'
 DEBUG = True
 
 ALLOWED_HOSTS = []
+AUTH_USER_MODEL = 'members.User'
 
 # Application definition
 
-
+YOUTUBE_API_KEY = 'AIzaSyC4YWhA59PCMpLtJ6gM-sxKERiCdqe2Wmk'
 FACEBOOK_APP_ID = '189086525189859'
 FACEBOOK_SECRET_CODE = 'ff60f934408690673f2bfa11be8d264b'
 AUTHENTICATION_BACKENDS = [
@@ -127,7 +128,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-AUTH_USER_MODEL = 'members.User'
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
@@ -141,6 +142,8 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/

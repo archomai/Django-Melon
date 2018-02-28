@@ -7,9 +7,7 @@
     <!--artist-add로의 링크 생성 -->
 
     <a href="{% url 'artist:artist-add' %}">아티스트 추가</a>
-
     <ul class="clearfix">
-
         <li class="clearfix">
             <a href="{% url 'artist:artist-detail' artist_pk=artist.pk %}">
                 <img src="{% if artist.img_profile %}{{ artist.img_profile.url }}{% endif %}" alt="" class="cover">
@@ -28,7 +26,7 @@
                     <input type="hidden" name="next-path" value="{{ request.get_full_path }}">
 
                     {% if request.user in artist.like_users.all %}
-                        <button type="submit">좋아요 취소</button>
+                    <button type="submit">좋아요 취소</button>
                     {% else %}
                     <button type="submit">좋아요 토글</button>
                     {% endif %}
@@ -36,8 +34,18 @@
                 {% endif %}
             </a>
         </li>
+    </ul>
 
-
+    <h3>관련 Youtube영상 </h3>
+    <ul class="youtube-search-list">
+        {% for item in youtube_items %}
+        <li>
+            <a href="https://youtu.be/{{ item.id.videoId }}" target="_blank">
+                <img src="{{ item.snippet.thumbnails.medium.url }}" alt="">
+            </a>
+        </li>
+        <div>{{ item.snippet.tittle }}</div>
+        {% endfor %}
     </ul>
 </div>
 
