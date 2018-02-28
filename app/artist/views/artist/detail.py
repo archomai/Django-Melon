@@ -1,6 +1,6 @@
 import requests
 from django.conf import settings
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 
 from ...models import Artist
 
@@ -24,9 +24,12 @@ def artist_detail(request, artist_pk):
     response = requests.get(url, params)
     response_dict = response.json()
 
+
     context = {
         'artist': artist,
         # youtube 검색 후 전달받은 데이터의 'item' 값
         'youtube_items': response_dict['items'],
     }
     return render(request, 'artist/artist_detail.html', context)
+
+
