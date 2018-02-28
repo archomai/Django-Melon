@@ -1,5 +1,6 @@
+
 .artist-list-container {
-  ul {
+  ul.artist-list {
     li {
       float: left;
       width: 50%;
@@ -7,7 +8,6 @@
       border-bottom: 1px solid #ddd;
       padding: 15px;
       height: 150px;
-
 
       a {
         display: inline-block;
@@ -17,7 +17,7 @@
         float: left;
         width: 120px;
         height: 120px;
-        border: 1px solid #ddd
+        border: 1px solid #ddd;
       }
       .artist-info {
         float: left;

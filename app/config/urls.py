@@ -20,6 +20,7 @@ from django.urls import path, include
 
 from config import views
 from members.views import login_view, signup_view, logout_view, facebook_login
+from sms.views import send_sms
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -34,6 +35,8 @@ urlpatterns = [
     path('facebook-login/', facebook_login, name='facebook-login'),
 
     path('signup/', signup_view, name='signup'),
+
+    path('sms/', send_sms, name='send-sms'),
 
     path('artist/', include('artist.urls')),
     # song

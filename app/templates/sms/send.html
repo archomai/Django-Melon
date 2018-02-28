@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div>
+    <form action="{% url 'send-sms' %}" method="POST">
+        {% csrf_token %}
+        <input type="text" name="to">
+        <input type="text" name="text">
+        <button type="submit">문자 보내기</button>
+    </form>
+</div>
+
+{% endblock %}
