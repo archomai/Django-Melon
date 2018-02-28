@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div>
+    <form action="{% url 'send-email' %}" method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+            <label>제목</label>
+            <input type="text" name="subject" placeholder="제목">
+        </div>
+        <div>
+            <label>내용</label>
+            <textarea  name="message"  rows="20" cols="60" wrap="soft"></textarea>
+        </div>
+        <div>
+            <label>이메일</label>
+            <input type="email" name="email" placeholder="받는 사람">
+        </div>
+        <button type="submit">보내기 </button>
+    </form>
+</div>
+
+
+{% endblock %}

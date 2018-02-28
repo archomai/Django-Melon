@@ -19,6 +19,7 @@ from django.contrib import admin
 from django.urls import path, include
 
 from config import views
+from emails.views import send_email
 from members.views import login_view, signup_view, logout_view, facebook_login
 from sms.views import send_sms
 
@@ -37,6 +38,8 @@ urlpatterns = [
     path('signup/', signup_view, name='signup'),
 
     path('sms/', send_sms, name='send-sms'),
+
+    path('email/', send_email, name='send-email'),
 
     path('artist/', include('artist.urls')),
     # song
