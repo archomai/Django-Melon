@@ -29,23 +29,18 @@ urlpatterns = [
     # artist.urls모듈을 include하도록 설정
     path('', views.index, name='index'),
 
-    path('login/', login_view, name='login'),
-
-    path('logout/', logout_view, name='logout'),
-
+    path('email/', send_email, name='send-email'),
     path('facebook-login/', facebook_login, name='facebook-login'),
-
+    path('login/', login_view, name='login'),
+    path('logout/', logout_view, name='logout'),
     path('signup/', signup_view, name='signup'),
-
     path('sms/', send_sms, name='send-sms'),
 
-    path('email/', send_email, name='send-email'),
-
-    path('artist/', include('artist.urls')),
-    # song
+    path('artist/', include('artist.urls.views')),
     path('song/', include('song.urls')),
-    # album
     path('album/', include('album.urls')),
+
+    path('api/artist/', include('artist.urls.apis')),
 ]
 
 # settings.MEDIA_URL('/media/')로 시작하는 요청은
