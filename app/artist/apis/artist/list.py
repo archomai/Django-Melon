@@ -12,13 +12,20 @@ __all__ = (
 def artist_list(request):
     # localhost:8000/api/artist/
     artists = Artist.objects.all()
+    # data = {
+    #     'artists': [
+    #         {
+    #             'melon_id': artist.melon_id,
+    #             'name': artist.name,
+    #             'img_profile': artist.img_profile.url if artist.img_profile else None,
+    #         }
+    #         for artist in artists],
+    # }
 
     data = {
-        'artists': [
-            {
-                'melon_id': artist.melon_id,
-                'name': artist.name
-            } for artist in artists],
+        'artists': [artist.to_json for artist in artists],
     }
-    # return HttpResponse(json.dumps(data), content_type='application/json')
+    # return HttpResponse(
+    #       json.dumps(data),
+    #       content_type='application/json')
     return JsonResponse(data)

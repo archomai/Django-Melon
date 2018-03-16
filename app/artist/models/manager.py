@@ -3,6 +3,7 @@ from datetime import datetime
 from django.core.files import File
 from django.db import models
 
+from config import settings
 from crawler.artist import ArtistData
 from utils.file import download, get_buffer_ext
 
@@ -12,6 +13,36 @@ __all__ = (
 
 
 class ArtistManager(models.Manager):
+    def to_dict(self):
+        result = []
+        for instance in self.get_queryset():
+            result.append(instance.to_json)
+        return result
+        # 기존 쿼리셋 -> self.get_queryset()
+        # 특정 쿼리셋의 데이터 리스트를 dict의 list형태로 반환하도록 함
+        # Artist.objects.all().to_dict()
+        #     [
+        #         {
+        #             'pk': <artist pk>,
+        #             'name': <artist name>,
+        #             'melon_id': <artist melon id>,
+        #             'img_profile': ...,
+        #         },
+        #         {
+        #             'pk': <artist pk>,
+        #             'name': <artist name>,
+        #             'melon_id': <artist melon id>,
+        #             'img_profile': ...,
+        #         },
+        #     ]
+
+        # artists = self.values('pk', 'name', 'melon_id', 'img_profile')
+        # artist_data = []
+        # for artist in artists:
+        #     artist['img_profile'] = settings.MEDIA_URL + artist['img_profile']
+        #     artist_data.append(artist)
+        # return artist_data
+
     def update_or_create_from_melon(self, artist_id):
         from .artist import Artist
         artist = ArtistData(artist_id)
@@ -49,15 +80,13 @@ class ArtistManager(models.Manager):
                 'blood_type': blood_type,
             }
         )
-
-        # img_profile필드에 저장할 파일 확장자를 바이너리 데이터 자체의 MIME_TYPE에서 가져옴
+        # img_profile필드에 저장할 파일확장자를 바이너리 데이터 자체의 MIME_TYPE에서 가져옴
         # 파일명은 artist_id를 사용
         temp_file = download(url_img_cover)
         file_name = '{artist_id}.{ext}'.format(
             artist_id=artist_id,
             ext=get_buffer_ext(temp_file),
         )
-
         # artist.img_profile필드의 save를 따로 호출, 이름과 File객체를 전달
         #   (Django)File객체의 생성에는 (Python)File객체를 사용,
         #           이 때 (Python)File객체처럼 취급되는 BytesIO를 사용
