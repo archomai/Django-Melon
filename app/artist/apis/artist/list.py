@@ -1,31 +1,28 @@
-import json
+from rest_framework import generics, permissions
+from rest_framework.views import APIView
 
-from django.http import JsonResponse, HttpResponse
-
-from artist.models import Artist
+from artist.serializers import ArtistSerializer
+from utils.pagination import StandardResultsSetPagination
+from ...models import Artist
+from rest_framework.response import Response
 
 __all__ = (
-    'artist_list',
+    'ArtistListCreateView',
+    'ArtistRetrieveUpdateDestroyView',
 )
 
 
-def artist_list(request):
-    # localhost:8000/api/artist/
-    artists = Artist.objects.all()
-    # data = {
-    #     'artists': [
-    #         {
-    #             'melon_id': artist.melon_id,
-    #             'name': artist.name,
-    #             'img_profile': artist.img_profile.url if artist.img_profile else None,
-    #         }
-    #         for artist in artists],
-    # }
+class ArtistListCreateView(generics.ListCreateAPIView):
+    queryset = Artist.objects.all()
+    serializer_class = ArtistSerializer
+    pagination_class = StandardResultsSetPagination
 
-    data = {
-        'artists': [artist.to_json for artist in artists],
-    }
-    # return HttpResponse(
-    #       json.dumps(data),
-    #       content_type='application/json')
-    return JsonResponse(data)
+    def get(self, request, *args, **kwargs):
+        print('request.user:', request.user)
+        return super().get(request, *args, **kwargs)
+
+
+class ArtistRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Artist.objects.all()
+    serializer_class = ArtistSerializer
+    pagination_class = StandardResultsSetPagination

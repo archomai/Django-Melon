@@ -40,6 +40,15 @@ DEBUG = True
 ALLOWED_HOSTS = []
 AUTH_USER_MODEL = 'members.User'
 
+#DRF
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+
+    )
+}
+
 # Application definition
 
 YOUTUBE_API_KEY = 'AIzaSyC4YWhA59PCMpLtJ6gM-sxKERiCdqe2Wmk'
@@ -70,6 +79,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'corsheaders',
     'rest_framework',
+    'rest_framework.authtoken',
 
     'album',
     'song',
